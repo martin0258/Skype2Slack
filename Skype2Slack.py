@@ -19,14 +19,14 @@ import Skype4Py
 class SkypeEventHandler:
     @staticmethod
     def monitor_message(msg, stat):
-        if not stat == "SENDING":
+        if not stat == "RECEIVED":
             return
 
         msgBody = msg.Body.strip()
         print stat, msg.FromHandle, msgBody
 
         # Send message to Slack channel
-        msg2Slack = "[Skype] %s: %s" % (msg.FromHandle, msgBody)
+        msg2Slack = "(Skype) *%s*: %s" % (msg.FromDisplayName, msgBody)
         response = requests.post(bot_url, data=msg2Slack, params=post_params)
         print response
 
@@ -59,8 +59,8 @@ if __name__ == "__main__":
 
     skype.OnMessageStatus = SkypeEventHandler.monitor_message
 
-    raw_input("Waiting for Skype messages (Press ENTER to finish)\n")
-    print 'Thank you for using skyfire! Bye=)'
+    raw_input("(Press ENTER to exit)\nWaiting for Skype messages...")
+    print 'Thank you for using Skype2Slack! Bye=)'
     sys.stdout.close()
     sys.stderr.close()
     sys.exit(0)
