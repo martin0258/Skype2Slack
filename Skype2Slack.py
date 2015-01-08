@@ -16,6 +16,10 @@ import requests
 import Skype4Py
 
 
+def send_message_to_slack(msg):
+    return requests.post(bot_url, data=msg, params=post_params)
+
+
 class SkypeEventHandler:
     @staticmethod
     def monitor_message(msg, stat):
@@ -27,7 +31,7 @@ class SkypeEventHandler:
 
         # Send message to Slack channel
         msg2Slack = "(Skype) *%s*: %s" % (msg.FromDisplayName, msgBody)
-        response = requests.post(bot_url, data=msg2Slack, params=post_params)
+        response = send_message_to_slack(msg2Slack)
         print response
 
 
@@ -59,8 +63,14 @@ if __name__ == "__main__":
 
     skype.OnMessageStatus = SkypeEventHandler.monitor_message
 
+    # Welcome
+    welcome_msg = "Hi, I've been told to post your Skype messages here. " + \
+                  "Happy *Skype2Slacking*! :smile:"
+    # send_message_to_slack(welcome_msg)
+
     raw_input("(Press ENTER to exit)\nWaiting for Skype messages...")
-    print 'Thank you for using Skype2Slack! Bye=)'
+    exit_msg = 'Hi, *Skype2Slack* just left me! Hope to help you next time~'
+    # send_message_to_slack(exit_msg)
     sys.stdout.close()
     sys.stderr.close()
     sys.exit(0)
